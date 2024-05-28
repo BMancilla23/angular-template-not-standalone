@@ -1,27 +1,128 @@
-# TemplateAngularNotStandalone
+### Install Angular ESLint
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.3.
+`ng add @angular-eslint/schematics`
 
-## Development server
+### Install Prettier and Prettier-ESLint dependencies
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+`npm i prettier prettier-eslint eslint-config-prettier eslint-plugin-prettier -D`
 
-## Code scaffolding
+### ESLint configuration
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Filename: `.eslintrc.json`
 
-## Build
+```json
+// https://github.com/angular-eslint/angular-eslint#notes-for-eslint-plugin-prettier-users
+{
+  "root": true,
+  "ignorePatterns": ["projects/**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["tsconfig.json"],
+        "createDefaultProgram": true
+      },
+      "extends": ["plugin:@angular-eslint/recommended", "plugin:@angular-eslint/template/process-inline-templates", "plugin:prettier/recommended"],
+      "rules": {
+        "@angular-eslint/component-class-suffix": [
+          "error",
+          {
+            "suffixes": ["Page", "Component"]
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "app",
+            "style": "kebab-case"
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "app",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/use-lifecycle-interface": ["error"],
+        "@typescript-eslint/member-ordering": 0,
+        "@typescript-eslint/naming-convention": 0
+      }
+    },
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "rules": {}
+    },
+    {
+      "files": ["*.html"],
+      "excludedFiles": ["*inline-template-*.component.html"],
+      "extends": ["plugin:prettier/recommended"],
+      "rules": {
+        "prettier/prettier": ["error", { "parser": "angular" }]
+      }
+    }
+  ]
+}
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Prettier Configuration
 
-## Running unit tests
+Filename: `.prettierrc`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```json
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "singleQuote": true,
+  "semi": true,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "trailingComma": "es5",
+  "bracketSameLine": true,
+  "printWidth": 80
+}
+```
 
-## Running end-to-end tests
+Filename: `.prettierignore`
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```
+dist
+node_modules
+```
 
-## Further help
+### VSCode extensions:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+dbaeumer.vscode-eslint
+esbenp.prettier-vscode
+```
+
+### Add the following to your .vscode/settings.json file:
+
+```
+{
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.formatOnSave": false
+  },
+},
+"editor.suggest.snippetsPreventQuickSuggestions": false,
+"editor.inlineSuggest.enabled": true
+```
+
+### Add Fix Lint and Prettier errors command in package.json
+
+`"lint:fix": "ng lint --fix"`
